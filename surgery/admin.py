@@ -1,5 +1,5 @@
 from django.contrib import admin
-from surgery.models import PatientBasic,CHA2DS2VACsEvaluation,HASBLEdEvaluation,SurgeryInfo,TEE
+from surgery.models import PatientBasic,CHA2DS2VACsEvaluation,HASBLEdEvaluation,SurgeryInfo
 
 class ModifiedTabInline(admin.TabularInline):
     extra = 1
@@ -16,6 +16,12 @@ class surgeryInfoInline(ModifiedTabInline):
     model = SurgeryInfo
 
 class SurgeryInfoAdmin(admin.ModelAdmin):
+    fieldsets = (
+        [u'术前检查',
+            ['UCG',{'fields':('LV','LA','RV','RA','EF')}],
+            ['TEE',{'fields':('hasThrombus','laa0Diameter')}]
+        ]
+    )
     pass
 
 class PatientAdmin(admin.ModelAdmin):

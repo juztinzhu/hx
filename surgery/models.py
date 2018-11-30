@@ -47,18 +47,7 @@ class HASBLEdEvaluation(PatientAttribute):
     e = models.IntegerField(u'E年龄>65岁')
     d = models.IntegerField(u'D药物或酒精(各1分)')
     total = models.IntegerField(u'总分')
-
-class TEE(models.Model):
-    hasThrombus = models.BooleanField(u'是否有血栓')
-    laa0Diameter = models.IntegerField(u'0LAA开口直径')
-    laa0Depth = models.IntegerField(u'0LAA开口深度')
-    laa45Diameter = models.IntegerField(u'45开口直径')
-    laa45Depth = models.IntegerField(u'45开口深度')
-    laa90Diameter = models.IntegerField(u'90开口直径')
-    laa90Depth = models.IntegerField(u'90开口深度')
-    laa135Diameter = models.IntegerField(u'135开口直径')
-    laa135Depth = models.IntegerField(u'135开口深度')
-    
+   
 class SurgeryType(models.Model):
     OPTYPE = (
         ('rf','RF'),
