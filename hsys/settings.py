@@ -33,12 +33,14 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'grappelli',
     'django.contrib.admin',
+    #'surgery.apps.MyAdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'surgery',
+    #'surgery.apps.SurgeryConfig',
     'nested_admin',
 ]
 
@@ -126,3 +128,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+GRAPPELLI_ADMIN_TITLE = u'手术信息管理系统'

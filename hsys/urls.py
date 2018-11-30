@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url,include
 import nested_admin
+from surgery.admin import admin_site
 
 path(
     '',admin.site.urls
@@ -25,6 +26,7 @@ path(
 urlpatterns = [
     path('grappelli/', include('grappelli.urls')),
     path('admin/', admin.site.urls),
+    path('stat/', admin_site.urls),
     url(r'^_nested_admin/', include('nested_admin.urls')),
 ]
 

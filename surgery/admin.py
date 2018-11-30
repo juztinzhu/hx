@@ -1,6 +1,6 @@
 from django.contrib import admin
 import nested_admin
-from surgery.models import PatientBasic,CHA2DS2VACsEvaluation,HASBLEdEvaluation,UCG,TEE,InSurgery,Ablation,LAA
+from surgery.models import PatientBasic,CHA2DS2VACsEvaluation,HASBLEdEvaluation,UCG,TEE,InSurgery,Ablation,LAA,Antiarrhythmic,Anticoagulant,SurgeryMethod,AblationType
 
 class ModifiedTabInline(nested_admin.nested.NestedTabularInline):
     extra = 1
@@ -9,26 +9,35 @@ class ModifiedTabInline(nested_admin.nested.NestedTabularInline):
 
 class cha2ds2vacsInline(ModifiedTabInline):
     model = CHA2DS2VACsEvaluation
+    verbose_name = u'CHA2DS2-VACs评分'
+    verbose_name_plural = verbose_name
 
 class hasbledInline(ModifiedTabInline):
     model = HASBLEdEvaluation
+    verbose_name_plural = u'HAS-BLED评分'
 
 class UCGInline(ModifiedTabInline):
     model = UCG
+    verbose_name_plural = u'UCG'
 
 class TEEInline(ModifiedTabInline):
     model = TEE
+    verbose_name_plural = u'TEE'
 
 
 class AblationInline(ModifiedTabInline):
     model = Ablation
+    verbose_name_plural = u'消融'
 
 class LAAInline(ModifiedTabInline):
     model = LAA
+    verbose_name_plural = u'左心耳封堵'
 
 class InSurgeryInline(ModifiedTabInline):
     model = InSurgery
     inlines = [AblationInline, LAAInline]
+    verbose_name_plural = u'术中信息'
+    verbose_name = verbose_name_plural
 
 class PatientAdmin(nested_admin.nested.NestedModelAdmin):
     inlines = [cha2ds2vacsInline,hasbledInline,UCGInline,TEEInline,InSurgeryInline,]
@@ -43,9 +52,30 @@ class PatientAdmin(nested_admin.nested.NestedModelAdmin):
         (u'术前检查',{"classes": ("placeholder tee_set-group",), "fields" : ()}),
         ('',{'fields':(('opDate','opType','opMethod',),)}),
         (u'术中信息',{"classes": ("placeholder insurgery_set-group",), "fields" : ()}),
-        (u'术后用药',{'fields': (('anticoagulant', 'antiarrhythmic'),)})
+        (u'术后用药',{'fields': ('anticoagulant', 'antiarrhythmic',)})
 
     )
+    filter_horizontal = (
+    #    'anticoagulant', 'antiarrhythmic',
+    )
+    list_display = (
+        'registerId', 'name','idstr','gender','age','phone','af',
+    )
+
+    verbose_name = u'患者信息'
+    verbose_name_plural = u'患者信息'
+
+
 # Register your models here.
-admin.site.register(PatientBasic,PatientAdmin)
+class MyAdminSite(admin.AdminSite):
+    site_header = u'信息统计'  # 此处设置页面显示标题
+    site_title = u'手术信息统计系统'  # 此处设置页面头部标题
+ 
+admin_site = MyAdminSite(name='stat')
+#admin.site.register(PatientBasic,PatientAdmin)
+admin_site.register(PatientBasic,PatientAdmin)
+admin_site.register(SurgeryMethod)
+admin_site.register(AblationType)
+admin_site.register(Anticoagulant)
+admin_site.register(Antiarrhythmic)
 #admin.site.register([SurgeryType])

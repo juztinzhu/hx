@@ -3,6 +3,9 @@ from django.db import models
 # Create your models here.
 
 class SurgeryMethod(models.Model):
+    class Meta:
+        verbose_name = u'手术方式'
+        verbose_name_plural = verbose_name
     OPMETHOD = (
         ('Ensite','Ensite'),
         ('Watchman','Watchman'),
@@ -10,14 +13,31 @@ class SurgeryMethod(models.Model):
         ('Carto','Carto')
     )
     name = models.CharField(max_length = 16, choices = OPMETHOD)
+    def __str__(self):
+        return self.name
+    
 
 class Anticoagulant(models.Model):
-    name = models.CharField(u'抗凝药',max_length = 64, )
+    class Meta:
+        verbose_name = u'抗凝药'
+        verbose_name_plural = verbose_name
+    name = models.CharField(max_length = 64, )
+    def __str__(self):
+        return self.name
 
 class Antiarrhythmic(models.Model):
+    class Meta:
+        verbose_name = u'抗心律失常药'
+        verbose_name_plural = verbose_name
     name = models.CharField(max_length = 64,)
+    def __str__(self):
+        return self.name
 
 class PatientBasic(models.Model):
+    class Meta:
+        verbose_name = u'患者信息'
+        verbose_name_plural = verbose_name
+
     def __str__(self):
         return self.name+'|'+self.idstr
     name = models.CharField(u'姓名',max_length=20)
@@ -46,9 +66,9 @@ class PatientBasic(models.Model):
         ('RF+LAAC','RF+LAAC')
     )
     opType = models.CharField(u'手术类型', max_length=8, choices = OPTYPE)
-    opMethod = models.ManyToManyField(SurgeryMethod)
-    anticoagulant = models.ManyToManyField(Anticoagulant)
-    antiarrhythmic = models.ManyToManyField(Antiarrhythmic)
+    opMethod = models.ManyToManyField(SurgeryMethod, verbose_name = u'手术方式')
+    anticoagulant = models.ManyToManyField(Anticoagulant, verbose_name = u'抗凝药')
+    antiarrhythmic = models.ManyToManyField(Antiarrhythmic, verbose_name = u'抗心率失常药')
 
 
 class PatientAttribute(models.Model):
@@ -97,6 +117,9 @@ class InSurgery(PatientAttribute):
     pass
 
 class AblationType(models.Model):
+    class Meta:
+        verbose_name = u'消融术式'
+        verbose_name_plural = verbose_name
     ABLATION = (
         ('pvi','PVI'),
         ('tvi', 'TVI'),
@@ -108,13 +131,15 @@ class AblationType(models.Model):
         ('base', u'基质改良'),
         ('box','BOX'),
     )
-    abType = models.CharField(u'消融术式',max_length = 8, choices = ABLATION)
+    abType = models.CharField(max_length = 8, choices = ABLATION)
+    def __str__(self):
+        return self.get_abType_display()
 
 
 class Ablation(models.Model):
     surgery = models.ForeignKey(InSurgery,on_delete = models.CASCADE)
     opTimes = models.IntegerField(u"房颤手术次数")
-    ablationType = models.ManyToManyField(AblationType)
+    ablationType = models.ManyToManyField(AblationType, verbose_name = u'消融术式')
     isLinear = models.BooleanField(u'是否线性消融')
     isLowVolt = models.BooleanField(u'低电压区')
     HEARTRYTHM = (
@@ -124,7 +149,7 @@ class Ablation(models.Model):
     heartRythmAfter = models.CharField(u'消融后心率',max_length=2, choices = HEARTRYTHM, default = '')
     CARDIOVERSION = (
         ('',u''),
-        ('',u'电复律')
+        ('e',u'电复律')
     )
     cardioversionType = models.CharField(u'复律',max_length=2,choices = CARDIOVERSION, default = '')
     
