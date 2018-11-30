@@ -15,7 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import url,include
+import nested_admin
+
+path(
+    '',admin.site.urls
+)
 
 urlpatterns = [
+    path('grappelli/', include('grappelli.urls')),
     path('admin/', admin.site.urls),
+    url(r'^_nested_admin/', include('nested_admin.urls')),
 ]
+
