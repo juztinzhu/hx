@@ -75,6 +75,10 @@ class PatientAttribute(models.Model):
     patient = models.ForeignKey(PatientBasic, on_delete = models.CASCADE)
 
 class CHA2DS2VACsEvaluation(PatientAttribute):    
+    class Meta:
+        verbose_name = u'CHA2DS2-VACs评分'
+        verbose_name_plural = verbose_name
+
     c1 = models.IntegerField(u'C充血性心衰/左心功能不全')
     h = models.IntegerField(u'H高血压')
     a1 = models.IntegerField(u'A年龄>=75岁')
@@ -86,6 +90,10 @@ class CHA2DS2VACsEvaluation(PatientAttribute):
     total = models.IntegerField(u'总分')
 
 class HASBLEdEvaluation(PatientAttribute):
+    class Meta:
+        verbose_name_plural = u'HAS-BLED评分'
+        verbose_name = verbose_name_plural
+
     h = models.IntegerField(u'H高血压')
     a = models.IntegerField(u'A肾和肝功能异常')
     s = models.IntegerField(u'S卒中')
@@ -113,7 +121,16 @@ class UCG(PatientAttribute):
     RA = models.IntegerField()
     EF = models.IntegerField()
 
+class PreCheck(PatientAttribute):
+    class Meta:
+        verbose_name = u'术前检查'
+        verbose_name_plural = verbose_name
+    pass
+
 class InSurgery(PatientAttribute):
+    class Meta:
+        verbose_name = u'术中信息'
+        verbose_name_plural = verbose_name
     pass
 
 class AblationType(models.Model):
@@ -137,6 +154,9 @@ class AblationType(models.Model):
 
 
 class Ablation(models.Model):
+    class Meta:
+        verbose_name = u'消融'
+        verbose_name_plural = verbose_name
     surgery = models.ForeignKey(InSurgery,on_delete = models.CASCADE)
     opTimes = models.IntegerField(u"房颤手术次数")
     ablationType = models.ManyToManyField(AblationType, verbose_name = u'消融术式')
@@ -155,6 +175,9 @@ class Ablation(models.Model):
     
 
 class LAA(models.Model):
+    class Meta:
+        verbose_name = u'左心耳封堵'
+        verbose_name_plural = verbose_name
     surgery = models.ForeignKey(InSurgery,on_delete = models.CASCADE)
     xrayLAADiameter = models.IntegerField(u'X光心耳开口直径')
     xrayLAADepth = models.IntegerField(u'X光心耳开口深度')

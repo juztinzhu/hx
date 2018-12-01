@@ -1,6 +1,6 @@
 from django.contrib import admin
 import nested_admin
-from surgery.models import PatientBasic,CHA2DS2VACsEvaluation,HASBLEdEvaluation,UCG,TEE,InSurgery,Ablation,LAA,Antiarrhythmic,Anticoagulant,SurgeryMethod,AblationType
+from surgery.models import PatientBasic,CHA2DS2VACsEvaluation,HASBLEdEvaluation,UCG,TEE,InSurgery,Ablation,LAA,Antiarrhythmic,Anticoagulant,SurgeryMethod,AblationType,PreCheck
 
 class ModifiedTabInline(nested_admin.nested.NestedTabularInline):
     extra = 1
@@ -15,6 +15,7 @@ class cha2ds2vacsInline(ModifiedTabInline):
 class hasbledInline(ModifiedTabInline):
     model = HASBLEdEvaluation
     verbose_name_plural = u'HAS-BLED评分'
+    verbose_name = verbose_name_plural
 
 class UCGInline(ModifiedTabInline):
     model = UCG
@@ -33,6 +34,13 @@ class LAAInline(ModifiedTabInline):
     model = LAA
     verbose_name_plural = u'左心耳封堵'
 
+class PreCheckInline(ModifiedTabInline):
+    model = PreCheck
+    inlines = [UCGInline, TEEInline]
+    verbose_name_plural = u'术前检查'
+    verbose_name = verbose_name_plural
+
+
 class InSurgeryInline(ModifiedTabInline):
     model = InSurgery
     inlines = [AblationInline, LAAInline]
@@ -40,7 +48,7 @@ class InSurgeryInline(ModifiedTabInline):
     verbose_name = verbose_name_plural
 
 class PatientAdmin(nested_admin.nested.NestedModelAdmin):
-    inlines = [cha2ds2vacsInline,hasbledInline,UCGInline,TEEInline,InSurgeryInline,]
+    inlines = [cha2ds2vacsInline,hasbledInline,InSurgeryInline,PreCheckInline]
     fieldsets = (
         (u'基本信息',{'fields':(('registerId','name','idstr'),('gender','age','phone',))}),
         ("1", {"classes": ("placeholder cha2ds2vacsevaluation_set-group",), "fields" : ()}),
@@ -48,8 +56,7 @@ class PatientAdmin(nested_admin.nested.NestedModelAdmin):
 #        [u'术前检查-UCG', {'fields':('LV','LA','RV','RA','EF')}],
 #        [u'术前检查-TEE',{'fields':('hasThrombus','laa0Diameter')}],
         ('',{'fields':('af','otherDisease','lifeQualityScore')}),
-        (u'术前检查',{"classes": ("placeholder ucg_set-group",), "fields" : ()}),
-        (u'术前检查',{"classes": ("placeholder tee_set-group",), "fields" : ()}),
+        (u'术前检查',{"classes": ("placeholder precheck_set-group",), "fields" : ()}),
         ('',{'fields':(('opDate','opType','opMethod',),)}),
         (u'术中信息',{"classes": ("placeholder insurgery_set-group",), "fields" : ()}),
         (u'术后用药',{'fields': ('anticoagulant', 'antiarrhythmic',)})

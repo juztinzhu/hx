@@ -26,7 +26,7 @@ path(
 urlpatterns = [
     path('grappelli/', include('grappelli.urls')),
     path('admin/', admin.site.urls),
-    path('stat/', admin_site.urls),
+    path('', admin_site.urls),
     url(r'^_nested_admin/', include('nested_admin.urls')),
 ]
 
