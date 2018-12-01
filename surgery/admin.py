@@ -1,6 +1,6 @@
 from django.contrib import admin
 import nested_admin
-from surgery.models import PatientBasic,CHA2DS2VACsEvaluation,HASBLEdEvaluation,UCG,TEE,InSurgery,Ablation,LAA,Antiarrhythmic,Anticoagulant,SurgeryMethod,AblationType,PreCheck
+from surgery.models import PatientBasic,CHA2DS2VACsEvaluation,HASBLEdEvaluation,UCG,TEE,InSurgery,Ablation,LAA,Antiarrhythmic,Anticoagulant,SurgeryMethod,AblationType,PreCheck,FollowTEE,FollowTTE,SurgeryFollow
 
 class ModifiedTabInline(nested_admin.nested.NestedTabularInline):
     extra = 1
@@ -47,8 +47,23 @@ class InSurgeryInline(ModifiedTabInline):
     verbose_name_plural = u'术中信息'
     verbose_name = verbose_name_plural
 
+class FollowTEEInline(ModifiedTabInline):
+    model = FollowTEE
+
+class FollowTTEInline(ModifiedTabInline):
+    model = FollowTTE
+
+class SurgeryFollowInline(nested_admin.nested.NestedTabularInline):
+    model = SurgeryFollow
+    inlines = [FollowTTEInline,FollowTEEInline]
+    verbose_name = u'术后随访'
+    verbose_name_plural = verbose_name
+    extra = 4
+    max_num = 4
+    #can_delete = False
+
 class PatientAdmin(nested_admin.nested.NestedModelAdmin):
-    inlines = [cha2ds2vacsInline,hasbledInline,InSurgeryInline,PreCheckInline]
+    inlines = [cha2ds2vacsInline,hasbledInline,InSurgeryInline,PreCheckInline,SurgeryFollowInline]
     fieldsets = (
         (u'基本信息',{'fields':(('registerId','name','idstr'),('gender','age','phone',))}),
         ("1", {"classes": ("placeholder cha2ds2vacsevaluation_set-group",), "fields" : ()}),
@@ -59,7 +74,8 @@ class PatientAdmin(nested_admin.nested.NestedModelAdmin):
         (u'术前检查',{"classes": ("placeholder precheck_set-group",), "fields" : ()}),
         ('',{'fields':(('opDate','opType','opMethod',),)}),
         (u'术中信息',{"classes": ("placeholder insurgery_set-group",), "fields" : ()}),
-        (u'术后用药',{'fields': ('anticoagulant', 'antiarrhythmic',)})
+        (u'术后用药',{'fields': ('anticoagulant', 'antiarrhythmic',)}),
+        (u'术后随访',{"classes": ("placeholder surgeryfollow_set-group",), "fields" : ()}),
 
     )
     filter_horizontal = (

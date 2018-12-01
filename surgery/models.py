@@ -187,4 +187,41 @@ class LAA(models.Model):
     releaseTimes = models.IntegerField(u'释放次数')
     succeed = models.BooleanField(u'是否成功')
     branchRemain = models.BooleanField(u'是否有残余分流')
-    
+
+class SurgeryFollow(PatientAttribute):
+    class Meta:
+        verbose_name = u'术后随访'
+        verbose_name_plural = verbose_name
+    FOLLOWTIME = (
+        ('45d',u'术后45天'),
+        ('3m',u'术后3月'),
+        ('6m',u'术后6月'),
+        ('1y',u'术后1年'),
+    )
+    date = models.CharField(u'随访日期', max_length = 4, choices = FOLLOWTIME)
+
+class FollowTTE(models.Model):
+    class Meta:
+        verbose_name = 'TTE'
+        verbose_name_plural = verbose_name
+    follow = models.ForeignKey(SurgeryFollow, on_delete = models.CASCADE)
+    LV = models.IntegerField()
+    LA = models.IntegerField()
+    RV = models.IntegerField()
+    RA = models.IntegerField()
+    EF = models.IntegerField()
+    MVE = models.IntegerField('MV-E')
+    MVA	= models.IntegerField('MV-A')
+    TDIE = models.IntegerField('TDI-E\'')
+    TDIA = models.IntegerField('TDI-A\'')
+    EE = models.IntegerField('E/E\'')
+
+class FollowTEE(models.Model):
+    class Meta:
+        verbose_name = 'TEE'
+        verbose_name_plural = verbose_name
+    follow = models.ForeignKey(SurgeryFollow, on_delete = models.CASCADE)
+    branchRemain = models.BooleanField(u'有无分流')
+    branchWidth = models.IntegerField(u'分流束宽')
+    hasThrombus = models.BooleanField(u'有无血栓')
+
