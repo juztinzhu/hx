@@ -103,7 +103,13 @@ class HASBLEdEvaluation(PatientAttribute):
     d = models.IntegerField(u'D药物或酒精(各1分)')
     total = models.IntegerField(u'总分')
 
-class TEE(PatientAttribute):
+class PreCheck(PatientAttribute):
+    class Meta:
+        verbose_name = u'术前检查'
+        verbose_name_plural = verbose_name
+
+class TEE(models.Model):
+    precheck = models.ForeignKey(PreCheck,on_delete = models.CASCADE)
     hasThrombus = models.BooleanField(u'是否有血栓')
     laa0Diameter = models.IntegerField(u'0LAA开口直径')
     laa0Depth = models.IntegerField(u'0LAA开口深度')
@@ -114,18 +120,14 @@ class TEE(PatientAttribute):
     laa135Diameter = models.IntegerField(u'135开口直径')
     laa135Depth = models.IntegerField(u'135开口深度')
 
-class UCG(PatientAttribute):
+class UCG(models.Model):
+    precheck = models.ForeignKey(PreCheck,on_delete = models.CASCADE)
     LV = models.IntegerField(u'LV')
     LA = models.IntegerField()
     RV = models.IntegerField()
     RA = models.IntegerField()
     EF = models.IntegerField()
 
-class PreCheck(PatientAttribute):
-    class Meta:
-        verbose_name = u'术前检查'
-        verbose_name_plural = verbose_name
-    pass
 
 class InSurgery(PatientAttribute):
     class Meta:
