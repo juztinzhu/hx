@@ -62,6 +62,62 @@ class SurgeryFollowInline(nested_admin.nested.NestedTabularInline):
     max_num = 4
     #can_delete = False
 
+def export_xlsx(modeladmin, request, queryset):
+    import openpyxl
+    #from openpyxl.cell import get_column_letter
+    from django.http import HttpResponse
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=mymodel.xlsx'
+    wb = openpyxl.Workbook()
+    ws = wb.get_active_sheet()
+    ws.title = "MyModel"
+
+    row_num = 0
+
+    columns = [
+        (u"序号", 15),
+        (u"住院号", 15),
+        (u"姓名", 70),
+        (u"身份证号", 70),
+        (u"性别", 15),
+        (u"年龄", 15),
+        (u"联系方式", 15),
+        (u"房颤类型", 15),
+        (u"其他疾病", 15),
+        (u"生活质量评分", 15),
+    ]
+
+    for col_num in range(len(columns)):
+        c = ws.cell(row=row_num + 1, column=col_num + 1)
+        c.value = columns[col_num][0]
+        #c.style.font.bold = True
+        # set column width
+        #ws.column_dimensions[get_column_letter(col_num+1)].width = columns[col_num][1]
+
+    for obj in queryset:
+        row_num += 1
+        row = [
+            obj.id,
+            obj.registerId,
+            obj.name,
+            obj.idstr,
+            obj.gender,
+            obj.age,
+            obj.phone,
+            obj.af,
+            obj.otherDisease,
+            obj.lifeQualityScore,
+        ]
+        for col_num in range(len(row)):
+            c = ws.cell(row=row_num + 1, column=col_num + 1)
+            c.value = row[col_num]
+            #c.style.alignment.wrap_text = True
+
+    wb.save(response)
+    return response
+
+export_xlsx.short_description = u"Export XLSX"    
+
 class PatientAdmin(nested_admin.nested.NestedModelAdmin):
     inlines = [cha2ds2vacsInline,hasbledInline,InSurgeryInline,PreCheckInline,SurgeryFollowInline]
     fieldsets = (
@@ -87,6 +143,7 @@ class PatientAdmin(nested_admin.nested.NestedModelAdmin):
 
     verbose_name = u'患者信息'
     verbose_name_plural = u'患者信息'
+    actions = [export_xlsx]
 
 
 # Register your models here.
